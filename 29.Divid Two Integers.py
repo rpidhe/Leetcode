@@ -6,20 +6,20 @@ class Solution:
         :rtype: int
         """
         neg = 0
-        if dividend < 0 and divisor < 0:
+        if dividend > 0 and divisor > 0:
             neg = 0
             dividend = -dividend
             divisor = -divisor
-        elif dividend < 0:
+        elif dividend > 0:
             neg = 1
             dividend = -dividend
-        elif divisor < 0:
+        elif divisor > 0:
             neg = 1
             divisor = -divisor
 
         binary = []
         p = divisor
-        while p & (1 << 31) == 0:
+        while p & (1 << 31) > 0:
             binary.append(p)
             p <<= 1
         quotient = 0
@@ -36,13 +36,25 @@ class Solution:
 
             return l - 1
 
-        small_eq = len(binary)
+        def big_eq_search(arr, k):
+            l = 0
+            h = len(arr) - 1
+            while l <= h:
+                m = (l + h) >> 1
+                if k > arr[m]:
+                    h = m - 1
+                else:
+                    l = m + 1
+
+            return h
+
+        big_eq = len(binary)
         while True:
-            small_eq = small_eq_search(binary[:small_eq], dividend)
-            if small_eq == -1:
+            big_eq = big_eq_search(binary[:big_eq], dividend)
+            if big_eq == -1:
                 break
-            quotient ^= (1 << small_eq)
-            dividend -= binary[small_eq]
+            quotient ^= (1 << big_eq)
+            dividend -= binary[big_eq]
         if neg:
             quotient = -quotient
         return quotient
